@@ -18,7 +18,12 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+    socket.on('restDataEvent', (msg) => {
+        console.log('message:', msg);
+    });
+
     console.log('a user connected');
+    io.emit('connection', "Connected!");
 
     var watchHash;
     chokidar.watch('./target.json', {}).on('all', function (event, path, stats) {
@@ -30,7 +35,7 @@ io.on('connection', (socket) => {
                 if (hash != watchHash){
                     watchHash = hash;
                     console.log(event, hash);
-                    io.emit('connection', {
+                    io.emit('restResp', {
                         isDoneAndSent: true,
                         responseMsg: {
                             data: {
